@@ -5,7 +5,7 @@ from .box import Box
 
 
 class FileVoice(Box):
-    def __init__(self, pipeline, location, name):
+    def __init__(self, pipeline, name, location):
         super(FileVoice, self).__init__(name, pipeline)
         self.add_sequence([
             'filesrc location=%s ' % location,

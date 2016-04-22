@@ -84,7 +84,6 @@ class Box(object):
             print('link: %s >>> %s ' %
                   (str(self.last.name), str(item.name)))
             self.last.link(item)
-            print(item.name)
         self.box_after = other_box
         other_box.set_box_before(self)
 

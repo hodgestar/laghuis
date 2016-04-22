@@ -6,7 +6,7 @@ from gi.repository import GObject, Gst as gst  # noqa
 
 from .mic import Mic
 from .speaker import Speakers
-from .voice import EchoVoice
+from .voices import EchoVoice, FileVoice
 
 
 class Lag(object):
@@ -18,20 +18,25 @@ class Lag(object):
     def run(self, debug):
         pipeline = gst.Pipeline()
         mics = [
-            Mic(pipeline, 'MI', i) for i in (3,)
+            Mic(pipeline, 'MI', i) for i in (19,)
         ]
 
         voices = [
             EchoVoice(pipeline, "EV%d" % i, 2e9, 8e9, 0.8, 0.8) for i in (0,)
         ]
+        file_voice = [
+            FileVoice(pipeline, "FV", 'Ambient_C_Motion_2.mp3')
+        ]
 
         speakers = [
-            Speakers(pipeline, "SP%d" % i, i) for i in (0, 1, 2)]
+            Speakers(pipeline, "SP%d" % i, i) for i in (9, )]
 
-        mics[0].link(voices[0])
+        print(len(mics))
+        # mics[0].link(voices[0])
+        file_voice[0].link(voices[0])
         voices[0].link(speakers[0])
-        voices[0].link(speakers[1])
-        voices[0].link(speakers[2])
+        # voices[0].link(speakers[1])
+        # voices[0].link(speakers[2])
 
         pipeline.set_state(gst.State.PLAYING)
 
