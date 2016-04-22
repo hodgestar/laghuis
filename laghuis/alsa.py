@@ -14,7 +14,7 @@ USB_SND_CARD = "USB PnP Sound Device"
 def find_snd_cards(device_name=USB_SND_CARD, card_re=CARD_REGEX):
     """ Find sounds devices using aplay -l.
     """
-    # Our USB sound cards appear as lines line:
+    # Our USB sound cards appear as lines like:
     #
     # card 1: Device [USB PnP Sound Device], device 0: USB Audio [USB Audio]
     #   Subdevices: 0/1
