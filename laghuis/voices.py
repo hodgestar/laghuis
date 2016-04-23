@@ -12,6 +12,7 @@ class FileVoice(Box):
             'decodebin',
             'audioconvert',
             'audioresample',
+            'tee',
         ])
         self.elements['decodebin'].connect(
             "pad-added", self.decodebin_pad_added)
