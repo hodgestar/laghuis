@@ -22,10 +22,8 @@ class Box(object):
         self.pipeline = pipeline
         self.elements = {}
         self._prev = None
-        self.first = []
+        self.first = None
         self.last = None
-        self.box_before = []
-        self.box_after = []
 
     def __repr__(self):
         return "<%s name='%s'>" % (self.__class__.__name__, self.name)
@@ -49,7 +47,7 @@ class Box(object):
     def _get_elem_name(self, elem):
         return elem.name[len(self.name) + 1:]
 
-    def add_element_series(self, elem_def):
+    def add_element(self, elem_def):
         elem_def = self._set_elem_name(elem_def)
         elem = gst.parse_launch(elem_def)
         self.elements[self._get_elem_name(elem)] = elem
@@ -57,41 +55,18 @@ class Box(object):
         if self._prev:
             self._prev.link(elem)
         if not self.first:
-            self.first.append(elem)
-        self.last = elem
-        self._prev = elem
-
-    def add_element_parallel(self, elem_def):
-        elem_def = self._set_elem_name(elem_def)
-        elem = gst.parse_launch(elem_def)
-        self.elements[self._get_elem_name(elem)] = elem
-        self.pipeline.add(elem)
-        if self._prev:
-            self._prev.link(elem)
-        self.first.append(elem)
+            self.first = elem
         self.last = elem
         self._prev = elem
 
     def add_sequence(self, element_defs):
         for elem_def in element_defs:
-            self.add_element_series(elem_def)
+            self.add_element(elem_def)
 
-    def add_sequence_parallel(self, element_defs):
-        self._prev = None
-        self.add_element_parallel(element_defs[0])
-        if len(element_defs) > 1:
-            self.add_sequence(element_defs[1:])
+    def link(self, other):
+        print 'link: %s >>> %s ' % (
+            self.last.name, other.first.name)
+        self.last.link(other.first)
 
-    def link(self, other_box):
-        for item in other_box.first:
-            print('link: %s >>> %s ' %
-                  (str(self.last.name), str(item.name)))
-            self.last.link(item)
-        self.box_after = other_box
-        other_box.set_box_before(self)
-
-    def set_box_before(self, other_box):
-        self.box_before = other_box
-
-    def unlink(self):
-        self.add_sequence()
+    def terminate(self):
+        self.add_element("fakesink")
