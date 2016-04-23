@@ -27,6 +27,9 @@ class Box(object):
         self.box_before = []
         self.box_after = []
 
+    def __repr__(self):
+        return "<%s name='%s'>" % (self.__class__.__name__, self.name)
+
     def __getattr__(self, name):
         if name in self.elements:
             return ElementProxy(self.elements[name])
