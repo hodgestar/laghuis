@@ -1,10 +1,10 @@
 """ Main Laghuis script.
 """
 
-import time
-from gi.repository import GObject, Gst as gst  # noqa
+from gi.repository import GObject, Gst as gst, GLib as glib
 
 from .mic import Mic
+from .pulse import find_pulse_srcs, find_pulse_sinks
 from .speaker import Speakers
 from .voices import EchoVoice, FileVoice
 
@@ -14,51 +14,64 @@ class Lag(object):
     def __init__(self):
         GObject.threads_init()
         gst.init(None)
+        self.pipeline = None
 
-    def run(self, debug):
-        pipeline = gst.Pipeline()
+    def _on_bus_message(self, bus, msg):
+        mtype = msg.type
+        if mtype == gst.MessageType.ERROR:
+            err, debug = msg.parse_error()
+            print "Error: %s" % err, debug
+            self.pipeline.set_state(gst.State.NULL)
+        elif mtype == gst.MessageType.EOS:
+            print "Done (EOS)."
+            self.pipeline.set_state(gst.State.NULL)
+
+    def run(self):
+        self.pipeline = pipeline = gst.Pipeline()
+        pipeline.bus.add_signal_watch()
+        pipeline.bus.connect("message", self._on_bus_message)
+
+        srcs = find_pulse_srcs()
+        sinks = find_pulse_sinks()
+
         mics = [
-            Mic(pipeline, 'MI', i) for i in (19,)
-        ]
-
-        voices = [
-            EchoVoice(pipeline, "EV%d" % i, 2e9, 8e9, 0.8, 0.8) for i in (0,)
-        ]
-        file_voice = [
-            FileVoice(pipeline, "FV", 'Ambient_C_Motion_2.mp3')
+            Mic(pipeline, 'mic%d' % i, device)
+            for i, device in enumerate(srcs)
         ]
 
         speakers = [
-            Speakers(pipeline, "SP%d" % i, i) for i in (9, )]
+            Speakers(pipeline, 'spk%d' % i, device)
+            for i, device in enumerate(sinks)
+        ]
 
-        print(len(mics))
-        # mics[0].link(voices[0])
-        file_voice[0].link(voices[0])
+        voices = [
+            EchoVoice(pipeline, "echo%d" % i, 2e9, 8e9, 0.8, 0.8)
+            for i in (0,)
+        ]
+
+        file_voices = [
+            FileVoice(pipeline, "file%d" % i, 'Ambient_C_Motion_2.mp3')
+            for i in (0,)
+        ]
+
+        print "Mics:"
+        print mics
+
+        print "Speakers:"
+        print speakers
+
+        file_voices[0].link(voices[0])
         voices[0].link(speakers[0])
-        # voices[0].link(speakers[1])
-        # voices[0].link(speakers[2])
 
         pipeline.set_state(gst.State.PLAYING)
 
-        if debug:
-            import pdb
-            pdb.set_trace()
-            return
-        while 1:
-            try:
-                # for i in range(-10, 12):
-                #     for j in range(10):
-                #         setattr(b.equalizer_10bands, 'band%s' %j, i)
-                #
-                # for i in range(-10, 10):
-                #     pan = float(i / 10.)
-                #     p.audiopanorama.panorama = pan
-                #     time.sleep(1)
-                time.sleep(1)
-            except:
-                raise
+        mainloop = glib.MainLoop()
+        try:
+            mainloop.run()
+        except KeyboardInterrupt:
+            print "Quitting ..."
 
 
 if __name__ == "__main__":
     l = Lag()
-    l.run(debug=False)
+    l.run()
