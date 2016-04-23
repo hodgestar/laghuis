@@ -3,13 +3,15 @@
 
 from gi.repository import GObject, Gst as gst, GLib as glib
 
-from .mic import Mic
-from .pulse import find_pulse_srcs, find_pulse_sinks
-from .speaker import Speakers
+from .mic import AlsaMic, PulseMic
+from .speaker import AlsaSpeakers, PulseSpeakers
 from .voices import EchoVoice, FileVoice
 
 
 class Lag(object):
+
+    ALSA = "alsa"
+    PULSE = "pulse"
 
     def __init__(self):
         GObject.threads_init()
@@ -26,23 +28,21 @@ class Lag(object):
             print "Done (EOS)."
             self.pipeline.set_state(gst.State.NULL)
 
-    def run(self):
+    def run(self, audio_type=ALSA):
+        assert audio_type in (self.ALSA, self.PULSE)
         self.pipeline = pipeline = gst.Pipeline()
         pipeline.bus.add_signal_watch()
         pipeline.bus.connect("message", self._on_bus_message)
 
-        srcs = find_pulse_srcs()
-        sinks = find_pulse_sinks()
+        if audio_type == self.ALSA:
+            mic_cls = AlsaMic
+            speaker_cls = AlsaSpeakers
+        else:
+            mic_cls = PulseMic
+            speaker_cls = PulseSpeakers
 
-        mics = [
-            Mic(pipeline, 'mic%d' % i, device)
-            for i, device in enumerate(srcs)
-        ]
-
-        speakers = [
-            Speakers(pipeline, 'spk%d' % i, device)
-            for i, device in enumerate(sinks)
-        ]
+        mics = mic_cls.all(pipeline)
+        speakers = speaker_cls.all(pipeline)
 
         voices = [
             EchoVoice(pipeline, "echo%d" % i, 2e9, 8e9, 0.8, 0.8)
@@ -78,4 +78,4 @@ class Lag(object):
 
 if __name__ == "__main__":
     l = Lag()
-    l.run()
+    l.run(Lag.PULSE)
