@@ -5,11 +5,10 @@ from .box import Box
 
 
 class Speakers(Box):
-    def __init__(self, pipeline, name, speaker):
+    def __init__(self, pipeline, name, device):
         super(Speakers, self).__init__(name, pipeline)
         self.add_sequence([
             'audiomixer name=mixer',
             'audiopanorama name=pan',
-            'pulsesink device=%d name=sink' %
-            speaker
+            'pulsesink name=sink device=%d' % (device,),
         ])
