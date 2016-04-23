@@ -50,7 +50,7 @@ class Lag(object):
         ]
 
         file_voice = FileVoice(
-            pipeline, "file%d" % i, 'Ambient_C_Motion_2.mp3')
+            pipeline, "file_ambient", 'Ambient_C_Motion_2.mp3')
 
         print "Mics:"
         print mics
