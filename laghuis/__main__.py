@@ -29,8 +29,10 @@ class Lag(object):
             self.pipeline.set_state(gst.State.NULL)
         elif mtype == gst.MessageType.STATE_CHANGED:
             old, new, pending = msg.parse_state_changed()
-            print "State changed from %s to %s (pending changes: %s)" % (
-                old, new, pending)
+            print "%s -> %s (src: %s)" % (
+                old.value_name, new.value_name, msg.src)
+            if pending != gst.State.VOID_PENDING:
+                print "  PENDING: %s" % (pending.value_name,)
 
     def run(self, audio_type=ALSA):
         assert audio_type in (self.ALSA, self.PULSE)
