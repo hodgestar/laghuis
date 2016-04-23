@@ -46,13 +46,11 @@ class Lag(object):
 
         voices = [
             EchoVoice(pipeline, "echo%d" % i, 2e9, 8e9, 0.8, 0.8)
-            for i in (0,)
+            for i in range(len(speakers))
         ]
 
-        file_voices = [
-            FileVoice(pipeline, "file%d" % i, 'Ambient_C_Motion_2.mp3')
-            for i in (0,)
-        ]
+        file_voice = FileVoice(
+            pipeline, "file%d" % i, 'Ambient_C_Motion_2.mp3')
 
         print "Mics:"
         print mics
@@ -60,8 +58,14 @@ class Lag(object):
         print "Speakers:"
         print speakers
 
-        file_voices[0].link(voices[0])
-        voices[0].link(speakers[0])
+        print "Terminating mics ..."
+        for mic in mics:
+            mic.terminate()
+
+        print "Linking file voices ..."
+        for i in range(len(speakers)):
+            file_voice.link(voices[i])
+            voices[i].link(speakers[i])
 
         pipeline.set_state(gst.State.PLAYING)
 
