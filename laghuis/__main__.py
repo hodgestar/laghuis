@@ -27,6 +27,10 @@ class Lag(object):
         elif mtype == gst.MessageType.EOS:
             print "Done (EOS)."
             self.pipeline.set_state(gst.State.NULL)
+        elif mtype == gst.MessageType.STATE_CHANGED:
+            old, new, pending = msg.parse_state_changed()
+            print "State changed from %s to %s (pending changes: %s)" % (
+                old, new, pending)
 
     def run(self, audio_type=ALSA):
         assert audio_type in (self.ALSA, self.PULSE)
