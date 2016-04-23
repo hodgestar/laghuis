@@ -11,7 +11,7 @@ CARD_REGEX = re.compile(
 USB_SND_CARD = "USB PnP Sound Device"
 
 
-def find_snd_cards(device_name=USB_SND_CARD, card_re=CARD_REGEX):
+def find_alsa_cards(device_name=USB_SND_CARD, card_re=CARD_REGEX):
     """ Find sounds devices using aplay -l.
     """
     # Our USB sound cards appear as lines like:
