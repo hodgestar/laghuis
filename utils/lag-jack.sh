@@ -2,6 +2,13 @@
 
 DEVICES="0 1 2"
 
+echo "Cleaning up rampant processes ..."
+
+pkill -9 "alsa_in"
+pkill -9 "alsa_out"
+pkill -9 "gst-launch-1.0"
+pkill -9 "jackdbus"
+
 echo "Setting up dbus environment variables ..."
 
 DBUS_ENV=`dbus-launch`
@@ -56,6 +63,9 @@ echo "Press enter when done ..."
 read user_input
 
 echo "Cleaning up ..."
+
+jack_control stop
+jack_control exit
 
 JOBS=`jobs -p`
 
