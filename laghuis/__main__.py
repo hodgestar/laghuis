@@ -5,6 +5,7 @@ from gi.repository import GObject, Gst as gst, GLib as glib
 
 from .mic import AlsaMic, PulseMic
 from .speaker import AlsaSpeakers, PulseSpeakers
+from .twiddle import PrintTwiddler
 from .voices import EchoVoice, FileVoice
 
 
@@ -74,6 +75,10 @@ class Lag(object):
             voices[i].link(speakers[i])
 
         pipeline.set_state(gst.State.PLAYING)
+
+        twiddler = PrintTwiddler(
+            pipeline, mics=mics, speakers=speakers, voices=voices)
+        glib.timeout_add_seconds(1, twiddler.safe_tic)
 
         mainloop = glib.MainLoop()
         try:
