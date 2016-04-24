@@ -64,9 +64,6 @@ read user_input
 
 echo "Cleaning up ..."
 
-jack_control stop
-jack_control exit
-
 JOBS=`jobs -p`
 
 for job in $JOBS
@@ -78,3 +75,8 @@ for job in $JOBS
 do
     wait "$job"
 done
+
+echo "Stopping JACK ..."
+
+jack_control stop
+jack_control exit
