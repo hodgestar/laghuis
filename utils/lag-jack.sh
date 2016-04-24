@@ -47,6 +47,8 @@ echo "Launching GStreamer pipeline ..."
 
 PYTHONPATH="$LAGHOME" python -m laghuis.lagjack &
 PIPEPROC="python"
+LAG_AUDIO_SRC="laghuis_jackaudiosrc"
+LAG_AUDIO_SINK="laghuis_jackaudiosink"
 
 echo "Waiting for pipeline to launch ..."
 
@@ -63,12 +65,12 @@ do
    MIC_CHANNEL=`expr $i % 2 + 1`
    jack_connect \
        "alsa-in-$i:capture_1" \
-       "$PIPEPROC-01:in_jackaudiosrc0_$MIC_CHANNEL"
+       "$PIPEPROC-01:in_${LAG_AUDIO_SRC}_${MIC_CHANNEL}"
    jack_connect \
-       "$PIPEPROC:out_jackaudiosink0_1" \
+       "$PIPEPROC:out_${LAG_AUDIO_SINK}_1" \
        "alsa-out-$i:playback_1"
    jack_connect \
-       "$PIPEPROC:out_jackaudiosink0_2" \
+       "$PIPEPROC:out_${LAG_AUDIO_SINK}_2" \
        "alsa-out-$i:playback_2"
 done
 
