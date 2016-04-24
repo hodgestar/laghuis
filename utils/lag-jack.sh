@@ -1,6 +1,12 @@
 #!/bin/bash -e
 
 DEVICES="0 1 2"
+LOGFILE="$HOME/lag-jack.log"
+
+echo "This is LAG JACK."
+echo "================="
+
+echo "Logging to $LOFILE ..."
 
 echo "Cleaning up rampant processes ..."
 
@@ -26,8 +32,8 @@ echo "Setting up ALSA devices ..."
 
 for i in $DEVICES
 do
-   alsa_in -j "alsa-in-$i" -d "hw:$i" -c 1 &
-   alsa_out -j "alsa-out-$i" -d "hw:$i" -c 2 &
+   alsa_in -j "alsa-in-$i" -d "hw:$i" -c 1 >> "$LOGFILE" &
+   alsa_out -j "alsa-out-$i" -d "hw:$i" -c 2 >> "$LOGFILE" &
 done
 
 echo "Launching GStreamer pipeline ..."
