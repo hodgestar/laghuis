@@ -14,9 +14,9 @@ echo "Logging to $LOGFILE ..."
 
 echo "Cleaning up rampant processes ..."
 
+pkill -9 "gst-launch-1.0" && true
 pkill -9 "alsa_in" && true
 pkill -9 "alsa_out" && true
-pkill -9 "gst-launch-1.0" && true
 pkill -9 "jackdbus" && true
 
 echo "Setting up dbus environment variables ..."
