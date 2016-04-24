@@ -45,7 +45,7 @@ echo "Connecting Jack ports ..."
 
 for i in $DEVICES
 do
-   MIC_CHANNEL=`expr $i % 2`
+   MIC_CHANNEL=`expr $i % 2 + 1`
    jack_connect \
        "alsa-in-$i:capture_1" \
        "gst-launch-1.0-01:in_jackaudiosrc0_$MIC_CHANNEL"
