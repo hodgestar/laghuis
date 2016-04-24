@@ -5,7 +5,6 @@
 class Twiddler(object):
     def __init__(self, **kw):
         self.tic = 0
-        self.pipeline = pipeline
         for k, v in kw.items():
             setattr(self, k, v)
 
