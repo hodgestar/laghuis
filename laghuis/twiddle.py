@@ -4,7 +4,7 @@
 
 class Twiddler(object):
     def __init__(self, **kw):
-        self.tic = 0
+        self.count = 0
         for k, v in kw.items():
             setattr(self, k, v)
 
@@ -16,7 +16,7 @@ class Twiddler(object):
             self.tic()
         except Exception as err:
             print err
-        self.tic += 1
+        self.count += 1
         return True
 
     def tic(self):
@@ -31,8 +31,7 @@ class PrintTwiddler(Twiddler):
 class JackTwiddler(Twiddler):
 
     def tic(self):
-        band = self.tic % 10
-        prev_band = (self.tic - 1) % 10
+        band = self.count % 10
+        prev_band = (self.count - 1) % 10
         setattr(self.box.eq, "band%d" % band, 10)
         setattr(self.box.eq, "band%d" % prev_band, -23)
-        print "Updated", prev_band, band

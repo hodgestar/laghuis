@@ -40,13 +40,20 @@ class LagJack(object):
         box = Box("laghuis", pipeline)
         box.add_sequence([
             'jackaudiosrc connect=none',
-            'audiochebband lower-frequency=20 upper-frequency=40000',
+            'audiochebband lower-frequency=100 upper-frequency=100000',
             'audiodynamic name=ad_compress mode=0 ratio=0.3',
             'audiodynamic name=ad_expand mode=1 ratio=2.0',
             'equalizer-10bands name=eq',
-            'audioecho name=echo'
+            'audioamplify amplification=2.0',
+            'audioecho name=echo_fast'
             ' delay=%d max-delay=%d intensity=0.6 feedback=0.5' % (
                 delay, max_delay),
+            'audioecho name=echo_slow'
+            ' delay=%d max-delay=%d intensity=0.6 feedback=0.5' % (
+                delay * 10, max_delay),
+            'audioecho name=echo_super_slow'
+            ' delay=%d max-delay=%d intensity=0.6 feedback=0.5' % (
+                delay * 60, delay * 60),
             'jackaudiosink connect=none',
         ])
 
