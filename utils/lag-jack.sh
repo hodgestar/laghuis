@@ -74,7 +74,7 @@ JOBS=`jobs -p`
 
 for job in $JOBS
 do
-    kill "%$job"
+    kill "$job"
 done
 
 for job in $JOBS
