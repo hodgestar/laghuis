@@ -14,7 +14,7 @@ echo "Logging to $LOGFILE ..."
 
 echo "Cleaning up rampant processes ..."
 
-pkill -9 "gst-launch-1.0" && true
+pkill -9 "python" && true
 pkill -9 "alsa_in" && true
 pkill -9 "alsa_out" && true
 pkill -9 "jackdbus" && true
@@ -42,10 +42,7 @@ done
 
 echo "Launching GStreamer pipeline ..."
 
-gst-launch-1.0 \
-    jackaudiosrc connect=none \
-    ! audioecho delay=2 intensity=0.6 feedback=0.5 \
-    ! jackaudiosink connect=none &
+PYTHONPATH="$LAGHOME" python -m laghuis.lagjack
 
 echo "Waiting for pipeline to launch ..."
 
