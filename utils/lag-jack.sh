@@ -28,7 +28,7 @@ echo "Launching GStreamer pipeline ..."
 gst-launch-1.0 \
     jackaudiosrc connect=none \
     ! audioecho delay=2 intensity=0.6 feedback=0.5 \
-    ! jackaudiosink connect=none
+    ! jackaudiosink connect=none &
 
 echo "Waiting for pipeline to launch ..."
 
