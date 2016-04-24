@@ -3,12 +3,15 @@
 DEVICES=`printenv LAG_DEVICES  || echo ""`
 DEVICES="${DEVICES:-0 1 2}"
 
+LAGHOME="$HOME/laghuis"
 LOGFILE="$HOME/lag-jack.log"
 
 echo "This is LAG JACK."
 echo "================="
 
-echo "Using devices $DEVICES"
+echo "Using devices $DEVICES."
+
+echo "Running in $LAGHOME."
 
 echo "Logging to $LOGFILE ..."
 
