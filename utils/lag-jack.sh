@@ -45,11 +45,15 @@ done
 
 echo "Launching GStreamer pipeline ..."
 
-PYTHONPATH="$LAGHOME" python -m laghuis.lagjack
+PYTHONPATH="$LAGHOME" python -m laghuis.lagjack &
 
 echo "Waiting for pipeline to launch ..."
 
 sleep 1
+
+echo "Jack ports are:"
+
+jack_lsp
 
 echo "Connecting Jack ports ..."
 
