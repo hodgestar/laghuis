@@ -1,12 +1,16 @@
 #!/bin/bash -e
 
-DEVICES="0 1 2"
+DEVICES=`printenv LAG_DEVICES  || echo ""`
+DEVICES="${DEVICES:-0 1 2}"
+
 LOGFILE="$HOME/lag-jack.log"
 
 echo "This is LAG JACK."
 echo "================="
 
-echo "Logging to $LOFILE ..."
+echo "Using devices $DEVICES"
+
+echo "Logging to $LOGFILE ..."
 
 echo "Cleaning up rampant processes ..."
 
