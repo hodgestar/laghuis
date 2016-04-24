@@ -37,7 +37,7 @@ class LagJack(object):
         delay = int(2e9)
         max_delay = int(30e9)
 
-        box = Box(pipeline, "laghuis")
+        box = Box("laghuis", pipeline)
         box.add_sequence([
             'jackaudiosrc connect=none',
             'audioecho delay=%d max-delay=%d intensity=0.6 feedback=0.5' % (
