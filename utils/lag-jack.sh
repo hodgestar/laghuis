@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 DEVICES="0 1 2"
 
