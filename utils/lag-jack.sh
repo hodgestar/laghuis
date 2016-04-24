@@ -4,10 +4,10 @@ DEVICES="0 1 2"
 
 echo "Cleaning up rampant processes ..."
 
-pkill -9 "alsa_in"
-pkill -9 "alsa_out"
-pkill -9 "gst-launch-1.0"
-pkill -9 "jackdbus"
+pkill -9 "alsa_in" && true
+pkill -9 "alsa_out" && true
+pkill -9 "gst-launch-1.0" && true
+pkill -9 "jackdbus" && true
 
 echo "Setting up dbus environment variables ..."
 
