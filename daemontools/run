@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "Laghuis Service"
+exec sudo -u pi /home/pi/laghuis/utils/rc.lag.sh 2>&1
