@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+SERVICE="$1"
+
 DEVICES=`printenv LAG_DEVICES  || echo ""`
 DEVICES="${DEVICES:-0 1 2}"
 
@@ -32,8 +34,9 @@ done
 
 echo "Start JACK with dummy device ..."
 
-jack_control ds dummy
+jack_control stop && true
 jack_control start
+jack_control ds dummy
 
 echo "Setting up ALSA devices ..."
 
@@ -76,8 +79,13 @@ done
 
 echo "Running ..."
 
-echo "Press enter when done ..."
-read user_input
+if [ -z "$SERVICE" ] ;
+then
+    echo "Press enter when done ..."
+    read user_input
+else
+    wait
+fi
 
 echo "Cleaning up ..."
 
