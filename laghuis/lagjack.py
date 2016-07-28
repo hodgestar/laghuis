@@ -40,20 +40,24 @@ class LagJack(object):
         box = Box("laghuis", pipeline)
         box.add_sequence([
             'jackaudiosrc connect=none',
-            'audiochebband lower-frequency=100 upper-frequency=100000',
-            'audiodynamic name=ad_compress mode=0 ratio=0.3',
-            'audiodynamic name=ad_expand mode=1 ratio=2.0',
-            'equalizer-10bands name=eq',
-            'audioamplify amplification=2.0',
+            'audiodynamic name=ad_expand mode=1 ratio=2.5 threshold=0.2',
+            'equalizer-10bands name=eq band0=-2.0 band9=-2.0',
+            'audiochebband lower-frequency=5 upper-frequency=3000',
+            'audioamplify name=amp1 amplification=5.0',
+            'audioecho name=echo_immediate'
+            ' delay=%d max-delay=%d intensity=0.7 feedback=0.2' % (
+                int(0.5e9), max_delay),
             'audioecho name=echo_fast'
-            ' delay=%d max-delay=%d intensity=0.6 feedback=0.5' % (
-                delay, max_delay),
+            ' delay=%d max-delay=%d intensity=0.8 feedback=0.3' % (
+                int(2e9), max_delay),
             'audioecho name=echo_slow'
-            ' delay=%d max-delay=%d intensity=0.6 feedback=0.5' % (
+            ' delay=%d max-delay=%d intensity=0.8 feedback=0.3' % (
                 delay * 10, max_delay),
             'audioecho name=echo_super_slow'
-            ' delay=%d max-delay=%d intensity=0.6 feedback=0.5' % (
+            ' delay=%d max-delay=%d intensity=0.8 feedback=0.3' % (
                 delay * 60, delay * 60),
+            'audiodynamic name=ad_compress mode=0 ratio=0.3 threshold=8.0',
+            'audioamplify name=amp2 amplification=5.0',
             'jackaudiosink connect=none',
         ])
 

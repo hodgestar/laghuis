@@ -42,8 +42,8 @@ echo "Setting up ALSA devices ..."
 
 for i in $DEVICES
 do
-   alsa_in -j "alsa-in-$i" -d "hw:$i" -c 1 >> "$LOGFILE" &
-   alsa_out -j "alsa-out-$i" -d "hw:$i" -c 2 >> "$LOGFILE" &
+   alsa_in -j "alsa-in-$i" -d "hw:$i" -c 1 -q 0 >> "$LOGFILE" &
+   alsa_out -j "alsa-out-$i" -d "hw:$i" -c 2 -q 0 >> "$LOGFILE" &
 done
 
 echo "Launching GStreamer pipeline ..."
@@ -57,9 +57,9 @@ echo "Waiting for pipeline to launch ..."
 
 sleep 1
 
-echo "Jack ports are:"
-
-jack_lsp
+# echo "Jack ports are:"
+#
+# jack_lsp -c
 
 echo "Connecting Jack ports ..."
 
@@ -67,8 +67,8 @@ for i in $DEVICES
 do
    MIC_CHANNEL=`expr $i % 2 + 1`
    jack_connect \
-       "alsa-in-$i:capture_1" \
-       "$PIPEPROC-01:in_${LAG_AUDIO_SRC}_${MIC_CHANNEL}"
+      "alsa-in-$i:capture_1" \
+      "$PIPEPROC-01:in_${LAG_AUDIO_SRC}_${MIC_CHANNEL}"
    jack_connect \
        "$PIPEPROC:out_${LAG_AUDIO_SINK}_1" \
        "alsa-out-$i:playback_1"
@@ -76,6 +76,14 @@ do
        "$PIPEPROC:out_${LAG_AUDIO_SINK}_2" \
        "alsa-out-$i:playback_2"
 done
+
+# jack_connect \
+#    "alsa-in-0:capture_1" \
+#    "$PIPEPROC-01:in_${LAG_AUDIO_SRC}_1"
+
+echo "Jack connections are:"
+
+jack_lsp -c
 
 echo "Running ..."
 
